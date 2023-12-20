@@ -23,7 +23,6 @@ inline fun <reified T : Any> RequestHeadersSpec<*>.retrieveJson(): T? = this
 	.body<T>()
 
 fun RequestHeadersSpec<*>.retrieveNone() = this
-	.accept(MediaType.APPLICATION_JSON)
 	.retrieve()!!
 
 inline fun <reified ResponseType : Any> RequestHeadersSpec<*>.retrieveEntity(): ResponseEntity<ResponseType> =
