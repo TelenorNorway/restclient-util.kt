@@ -1,5 +1,4 @@
-// IntelliJ is on drugs
-@file:Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
+// ^^ I'm not sure what IntelliJ smoked here, but I want some.
 
 package no.telenor.kt.restclient.util
 
@@ -7,23 +6,31 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClient.RequestHeadersSpec
+import org.springframework.web.client.RestClient.RequestHeadersUriSpec
 import org.springframework.web.client.RestClientResponseException
 import org.springframework.web.client.body
 import org.springframework.web.util.UriBuilder
 import java.net.URI
-import java.util.function.Function
 
+// --- request body utility---
+
+@Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
 fun RestClient.RequestBodySpec.json(value: Any) = this
 	.body(value)
 	.contentType(MediaType.APPLICATION_JSON)!!
 
-inline fun <reified T : Any> RequestHeadersSpec<*>.retrieveJson(): T? = this
+// --- response body utility ---
+
+inline fun <reified T : Any> RequestHeadersSpec<*>.retrieveJsonOrNull(): T? = this
 	.accept(MediaType.APPLICATION_JSON)
 	.retrieve()
 	.body<T>()
 
-fun RequestHeadersSpec<*>.retrieveNone() = this
-	.retrieve()!!
+inline fun <reified T : Any> RequestHeadersSpec<*>.retrieveJson(): T = retrieveJsonOrNull()!!
+
+fun RequestHeadersSpec<*>.retrieveNone() {
+	this.retrieve()
+}
 
 inline fun <reified ResponseType : Any> RequestHeadersSpec<*>.retrieveEntity(): ResponseEntity<ResponseType> =
 	try {
@@ -41,50 +48,141 @@ inline fun <reified ResponseType : Any> RequestHeadersSpec<*>.retrieveEntity(): 
 		}
 	}
 
-fun RestClient.get(uri: String) = get().uri(uri)!!
-fun RestClient.get(uri: URI) = get().uri(uri)!!
-fun RestClient.get(uri: String, vararg uriVariables: Pair<String, Any>) = get().uri(uri, uriVariables.toMap())!!
-fun RestClient.get(uri: String, vararg uriVariables: Any) = get().uri(uri, *uriVariables)!!
-fun RestClient.get(uri: String, uriVariables: Map<String, *>) = get().uri(uri, uriVariables)!!
-fun RestClient.get(uri: String, uriFunction: Function<UriBuilder, URI>) = get().uri(uri, uriFunction)!!
-fun RestClient.get(uriFunction: Function<UriBuilder, URI>) = get().uri(uriFunction)!!
+// --- url builder ---
 
-fun RestClient.head(uri: String) = head().uri(uri)!!
-fun RestClient.head(uri: URI) = head().uri(uri)!!
-fun RestClient.head(uri: String, vararg uriVariables: Pair<String, Any>) = head().uri(uri, uriVariables.toMap())!!
-fun RestClient.head(uri: String, vararg uriVariables: Any) = head().uri(uri, *uriVariables)!!
-fun RestClient.head(uri: String, uriVariables: Map<String, *>) = head().uri(uri, uriVariables)!!
-fun RestClient.head(uri: String, uriFunction: Function<UriBuilder, URI>) = head().uri(uri, uriFunction)!!
-fun RestClient.head(uriFunction: Function<UriBuilder, URI>) = head().uri(uriFunction)!!
+@Target(AnnotationTarget.TYPE)
+@DslMarker
+annotation class UrlBuilderDsl
 
-fun RestClient.post(uri: String) = post().uri(uri)!!
-fun RestClient.post(uri: URI) = post().uri(uri)!!
-fun RestClient.post(uri: String, vararg uriVariables: Pair<String, Any>) = post().uri(uri, uriVariables.toMap())!!
-fun RestClient.post(uri: String, vararg uriVariables: Any) = post().uri(uri, *uriVariables)!!
-fun RestClient.post(uri: String, uriVariables: Map<String, *>) = post().uri(uri, uriVariables)!!
-fun RestClient.post(uri: String, uriFunction: Function<UriBuilder, URI>) = post().uri(uri, uriFunction)!!
-fun RestClient.post(uriFunction: Function<UriBuilder, URI>) = post().uri(uriFunction)!!
+typealias UrlBuilder = (@UrlBuilderDsl UriBuilder).() -> Unit
 
-fun RestClient.put(uri: String) = put().uri(uri)!!
-fun RestClient.put(uri: URI) = put().uri(uri)!!
-fun RestClient.put(uri: String, vararg uriVariables: Pair<String, Any>) = put().uri(uri, uriVariables.toMap())!!
-fun RestClient.put(uri: String, vararg uriVariables: Any) = put().uri(uri, *uriVariables)!!
-fun RestClient.put(uri: String, uriVariables: Map<String, *>) = put().uri(uri, uriVariables)!!
-fun RestClient.put(uri: String, uriFunction: Function<UriBuilder, URI>) = put().uri(uri, uriFunction)!!
-fun RestClient.put(uriFunction: Function<UriBuilder, URI>) = put().uri(uriFunction)!!
+@Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
+private fun <S : RequestHeadersSpec<S>> RequestHeadersUriSpec<S>.url(uri: URI) =
+	this.uri(uri)!!
 
-fun RestClient.patch(uri: String) = patch().uri(uri)!!
-fun RestClient.patch(uri: URI) = patch().uri(uri)!!
-fun RestClient.patch(uri: String, vararg uriVariables: Pair<String, Any>) = patch().uri(uri, uriVariables.toMap())!!
-fun RestClient.patch(uri: String, vararg uriVariables: Any) = patch().uri(uri, *uriVariables)!!
-fun RestClient.patch(uri: String, uriVariables: Map<String, *>) = patch().uri(uri, uriVariables)!!
-fun RestClient.patch(uri: String, uriFunction: Function<UriBuilder, URI>) = patch().uri(uri, uriFunction)!!
-fun RestClient.patch(uriFunction: Function<UriBuilder, URI>) = patch().uri(uriFunction)!!
+@Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
+private fun <S : RequestHeadersSpec<S>> RequestHeadersUriSpec<S>.url(builder: UrlBuilder, url: String) =
+	this.uri(url) { it.also(builder).build() }!!
 
-fun RestClient.delete(uri: String) = delete().uri(uri)!!
-fun RestClient.delete(uri: URI) = delete().uri(uri)!!
-fun RestClient.delete(uri: String, vararg uriVariables: Pair<String, Any>) = delete().uri(uri, uriVariables.toMap())!!
-fun RestClient.delete(uri: String, vararg uriVariables: Any) = delete().uri(uri, *uriVariables)!!
-fun RestClient.delete(uri: String, uriVariables: Map<String, *>) = delete().uri(uri, uriVariables)!!
-fun RestClient.delete(uri: String, uriFunction: Function<UriBuilder, URI>) = delete().uri(uri, uriFunction)!!
-fun RestClient.delete(uriFunction: Function<UriBuilder, URI>) = delete().uri(uriFunction)!!
+@Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
+private fun <S : RequestHeadersSpec<S>> RequestHeadersUriSpec<S>.url(
+	builder: UrlBuilder,
+	url: String,
+	vars: Array<out Pair<String, Any>>
+) = this.uri(url) { it.also(builder).build(vars.toMap()) }!!
+
+@Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
+private fun <S : RequestHeadersSpec<S>> RequestHeadersUriSpec<S>.url(
+	builder: UrlBuilder,
+	url: String,
+	vars: Array<out Any>
+) = this.uri(url) { it.also(builder).build(*vars) }!!
+
+@Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
+private fun <S : RequestHeadersSpec<S>> RequestHeadersUriSpec<S>.url(
+	builder: UrlBuilder,
+	url: String,
+	vars: Map<String, *>
+) = this.uri(url) { it.also(builder).build(vars) }!!
+
+// --- get ---
+
+fun RestClient.get(uri: URI) =
+	get().url(uri)!!
+
+fun RestClient.get(uri: String, builder: UrlBuilder = {}) =
+	get().url(builder, uri)!!
+
+fun RestClient.get(uri: String, vararg uriVariables: Pair<String, Any>, builder: UrlBuilder = {}) =
+	get().url(builder, uri, uriVariables)!!
+
+fun RestClient.get(uri: String, vararg uriVariables: Any, builder: UrlBuilder = {}) =
+	get().url(builder, uri, uriVariables)!!
+
+fun RestClient.get(uri: String, uriVariables: Map<String, *>, builder: UrlBuilder = {}) =
+	get().url(builder, uri, uriVariables)!!
+
+// --- head ---
+
+fun RestClient.head(uri: URI) =
+	head().url(uri)!!
+
+fun RestClient.head(uri: String, builder: UrlBuilder = {}) =
+	head().url(builder, uri)!!
+
+fun RestClient.head(uri: String, vararg uriVariables: Pair<String, Any>, builder: UrlBuilder = {}) =
+	head().url(builder, uri, uriVariables)!!
+
+fun RestClient.head(uri: String, vararg uriVariables: Any, builder: UrlBuilder = {}) =
+	head().url(builder, uri, uriVariables)!!
+
+fun RestClient.head(uri: String, uriVariables: Map<String, *>, builder: UrlBuilder = {}) =
+	head().url(builder, uri, uriVariables)!!
+
+// --- post ---
+
+fun RestClient.post(uri: URI) =
+	post().url(uri)!!
+
+fun RestClient.post(uri: String, builder: UrlBuilder = {}) =
+	post().url(builder, uri)!!
+
+fun RestClient.post(uri: String, vararg uriVariables: Pair<String, Any>, builder: UrlBuilder = {}) =
+	post().url(builder, uri, uriVariables)!!
+
+fun RestClient.post(uri: String, vararg uriVariables: Any, builder: UrlBuilder = {}) =
+	post().url(builder, uri, uriVariables)!!
+
+fun RestClient.post(uri: String, uriVariables: Map<String, *>, builder: UrlBuilder = {}) =
+	post().url(builder, uri, uriVariables)!!
+
+// --- put ---
+
+fun RestClient.put(uri: URI) =
+	put().url(uri)!!
+
+fun RestClient.put(uri: String, builder: UrlBuilder = {}) =
+	put().url(builder, uri)!!
+
+fun RestClient.put(uri: String, vararg uriVariables: Pair<String, Any>, builder: UrlBuilder = {}) =
+	put().url(builder, uri, uriVariables)!!
+
+fun RestClient.put(uri: String, vararg uriVariables: Any, builder: UrlBuilder = {}) =
+	put().url(builder, uri, uriVariables)!!
+
+fun RestClient.put(uri: String, uriVariables: Map<String, *>, builder: UrlBuilder = {}) =
+	put().url(builder, uri, uriVariables)!!
+
+// --- patch ---
+
+fun RestClient.patch(uri: URI) =
+	patch().url(uri)!!
+
+fun RestClient.patch(uri: String, builder: UrlBuilder = {}) =
+	patch().url(builder, uri)!!
+
+fun RestClient.patch(uri: String, vararg uriVariables: Pair<String, Any>, builder: UrlBuilder = {}) =
+	patch().url(builder, uri, uriVariables)!!
+
+fun RestClient.patch(uri: String, vararg uriVariables: Any, builder: UrlBuilder = {}) =
+	patch().url(builder, uri, uriVariables)!!
+
+fun RestClient.patch(uri: String, uriVariables: Map<String, *>, builder: UrlBuilder = {}) =
+	patch().url(builder, uri, uriVariables)!!
+
+// --- delete ---
+
+fun RestClient.delete(uri: URI) =
+	delete().url(uri)!!
+
+fun RestClient.delete(uri: String, builder: UrlBuilder = {}) =
+	delete().url(builder, uri)!!
+
+fun RestClient.delete(uri: String, vararg uriVariables: Pair<String, Any>, builder: UrlBuilder = {}) =
+	delete().url(builder, uri, uriVariables)!!
+
+fun RestClient.delete(uri: String, vararg uriVariables: Any, builder: UrlBuilder = {}) =
+	delete().url(builder, uri, uriVariables)!!
+
+fun RestClient.delete(uri: String, uriVariables: Map<String, *>, builder: UrlBuilder = {}) =
+	delete().url(builder, uri, uriVariables)!!
