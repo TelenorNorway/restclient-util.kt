@@ -1,5 +1,3 @@
-// ^^ I'm not sure what IntelliJ smoked here, but I want some.
-
 package no.telenor.kt.restclient.util
 
 import org.springframework.http.MediaType
