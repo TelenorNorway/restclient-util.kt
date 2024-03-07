@@ -2,6 +2,9 @@
 
 _Utility functions for RestClient_
 
+This module provides some utility functions for Kotlin when
+it comes to working with Spring Boot's new RestClient.
+
 ## Gradle prerequisite
 
 In your gradle file
