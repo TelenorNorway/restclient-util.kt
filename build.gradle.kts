@@ -1,6 +1,6 @@
 plugins {
 	kotlin("jvm") version "1.9.21"
-	id("no.ghpkg") version "0.3.3"
+	id("sh.tnn") version "0.2.0"
 	id("io.spring.dependency-management") version "1.1.4"
 	id("org.springframework.boot") version "3.2.0"
 	`maven-publish`
