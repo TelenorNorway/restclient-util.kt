@@ -12,7 +12,7 @@ repositories.mavenCentral()
 
 dependencies.compileOnly("org.springframework:spring-web")
 
-kotlin.jvmToolchain(17)
+kotlin.jvmToolchain(21)
 
 tasks.named("bootJar") {
 	enabled = false
