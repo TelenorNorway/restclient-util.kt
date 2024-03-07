@@ -6,11 +6,11 @@ _Utility functions for RestClient_
 
 In your gradle file
 
-_Follow [this guide](https://github.com/testersen/no.ghpkg) on how to set up your environment for GitHub packages._
+_Follow [this guide](https://github.com/telenornorway/sh.tnn) on how to set up your environment for GitHub packages._
 
 ```kt
 plugins {
-	id("no.ghpkg") version "0.3.3"
+	id("sh.tnn") version "0.2.0"
 }
 ```
 
