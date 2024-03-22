@@ -3,6 +3,7 @@ package no.telenor.kt.restclient.util
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestClient
+import org.springframework.web.client.RestClient.RequestBodySpec
 import org.springframework.web.client.RestClient.RequestHeadersSpec
 import org.springframework.web.client.RestClient.RequestHeadersUriSpec
 import org.springframework.web.client.RestClientResponseException
@@ -13,9 +14,15 @@ import java.net.URI
 // --- request body utility---
 
 @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
-fun RestClient.RequestBodySpec.json(value: Any) = this
+fun RequestBodySpec.json(value: Any) = this
 	.body(value)
 	.contentType(MediaType.APPLICATION_JSON)!!
+
+fun RequestHeadersSpec<*>.header(header: String, value: Any) : RequestHeadersSpec<*> = this
+	.header(header, value.toString())
+
+fun RequestHeadersSpec<*>.headers(vararg headersWithValue: Pair<String, Any>) : RequestHeadersSpec<*> = this
+	.headers { httpHeaders -> headersWithValue.forEach { httpHeaders.add(it.first, it.second.toString()) }}
 
 // --- response body utility ---
 
