@@ -18,10 +18,10 @@ fun RequestBodySpec.json(value: Any) = this
 	.body(value)
 	.contentType(MediaType.APPLICATION_JSON)!!
 
-fun RequestBodySpec.header(header: String, value: Any) : RequestBodySpec = this
+fun RequestHeadersSpec<*>.header(header: String, value: Any) : RequestHeadersSpec<*> = this
 	.header(header, value.toString())
 
-fun RequestBodySpec.headers(vararg headersWithValue: Pair<String, Any>) : RequestBodySpec = this
+fun RequestHeadersSpec<*>.headers(vararg headersWithValue: Pair<String, Any>) : RequestHeadersSpec<*> = this
 	.headers { httpHeaders -> headersWithValue.forEach { httpHeaders.add(it.first, it.second.toString()) }}
 
 // --- response body utility ---
