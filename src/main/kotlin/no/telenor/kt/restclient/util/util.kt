@@ -34,7 +34,7 @@ inline fun <reified T : Any> RequestHeadersSpec<*>.retrieveJsonOrNull(): T? = th
 inline fun <reified T : Any> RequestHeadersSpec<*>.retrieveJson(): T = retrieveJsonOrNull()!!
 
 fun RequestHeadersSpec<*>.retrieveNone() {
-	this.retrieve()
+	this.retrieve().toBodilessEntity()
 }
 
 inline fun <reified ResponseType : Any> RequestHeadersSpec<*>.retrieveEntity(): ResponseEntity<ResponseType> =
